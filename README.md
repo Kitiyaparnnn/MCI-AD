@@ -11,25 +11,21 @@ Identifying transcriptomic biomarkers that distinguish stable MCI from progressi
 We evaluate three supervised models:
 
 - Linear Support Vector Machine (SVM)
-
+- Logistic Regression (LR)
 - 1D Convolutional Neural Network (1D-CNN)
 
-- 2D Convolutional Neural Network (2D-CNN)
+We also extract a set of gene biomarkers from each model using:
 
-We also extract biomarkers from each model using:
-
-- SVM coefficients
+- Leave-one-out (LOOCV) (for SVM and LR)
 
 - Integrated Gradients (for CNNs)
-
-External validation is performed using an independent GEO cohort.
 
 ## 🧪 Data Sources
 **Training Cohort**
 
 - GSE282742
 - Blood transcriptomics (TPM)
-- Progressive MCI (n = 28) vs Stable MCI (n = 39)
+- Progressive MCI (n = 28) vs Stable MCI (n = 39) vs AD (n = 49)
 
 **External Cohort**
 
@@ -40,21 +36,28 @@ External validation is performed using an independent GEO cohort.
 **Preprocessing**
 - Intersection of shared genes: 21,462 genes
 - Z-score normalization for ML models
-- Min-max scaling for CNN models
+- Mutual Information Filter to keep the top initial 2,000 genes 
 
 ## 🧬 Biomarker Identification Summary
 
-Across all three models, two genes consistently ranked highly:
-- FAM118A
-- IGKV2D-29
-
-These may serve as robust blood-based biomarkers for identifying MCI individuals at higher risk for progression to Alzheimer’s dementia.
+Across all three models, several MCI/AD-related genes were used as biomarkers, including
+CASP7, COL4A1, GLB1, PPARG, PON1, and CXCL8.
 
 ## 📊 Model Performance Comparison
 
-Below is the overall comparison of model performance evaluated on the external validation cohort (GSE249477).
-| **Model**      | **Accuracy** | **Sensitivity**   | **Specificity** | 
-| -------------- | ------------ | ----------------- | --------------- | 
-| **Linear SVM** | 41.46%       | 80.95%            | 0%              | 
-| **1D-CNN**     | 53.66%       | 23.81%            | 85%             |
-| **2D-CNN**     | 48.78%       | 0% | 100%        | 
+- MCI vs. AD classification
+
+| **Model** | **Train Accuracy** | **Evaluation Accuracy** |
+| -------------- | ------------ |  ------------ | 
+| **Linear SVM (80 genes)** | 99.14%       | 53.66%|
+| **Logistic Regression (120 genes)** | 100% | 56.10%|
+| **1D-CNN (100genes)**     | 59.30%      | 39.02% |
+
+
+- S-MCI vs. P-MCI vs. AD classification
+
+| **Model** | **Train Accuracy** | **Evaluation Accuracy** |
+| -------------- | ------------ |  ------------ | 
+| **Linear SVM (160 genes)** | 82.80%       | 56.10%|
+| **Logistic Regression (190 genes)** | 90.50% | 53.66%|
+| **1D-CNN (100 genes)**     | 42.14%      | 36.59% |
